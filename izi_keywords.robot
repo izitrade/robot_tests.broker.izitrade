@@ -117,7 +117,7 @@ izi find objectId element attribute
 
 izi перейти на сторінку пошуку
   [Arguments]  ${searchText}
-  Go to  ${BROKERS['izi'].homepage}/search?searchText=${searchText}
+  Go to  ${BROKERS['izi'].homepage}/tenders?searchText=${searchText}
   Wait Until Page Contains Element  css=tenders-search  15
   Sleep  500ms
 
@@ -151,7 +151,7 @@ izi знайти тендер та перейти на сторінку
   [Arguments]  ${tender_uaid}
   izi перейти на сторінку пошуку  searchText=${tender_uaid}
   Sleep	1s
-  Click Element  css=search-results-list tender-info:first-child .tender-info__footer a
+  Click Element  css=search-results tender-info:first-child .tender-info__footer a
   Wait Until Page Contains  ${tender_uaid}  15
 
 izi знайти на сторінці тендера поле title
@@ -263,26 +263,26 @@ izi знайти на сторінці тендера поле procuringEntity.c
   [Return]  ${value}
 
 izi знайти на сторінці тендера поле tenderPeriod.startDate
-  ${value}=  Execute Javascript  return $('tender-step-period-diagram .tender-step-period-diagram__item p:contains(Подання пропозицій)+p span:eq(0)').text()
+  ${value}=  Execute Javascript  return $('tender-periods-diagram .tender-periods-diagram__item p:contains(Подання пропозицій)+p span:eq(0)').text()
   ${value}=  izi convert izi date to prozorro date  ${value}
   [Return]  ${value}
 
 izi знайти на сторінці тендера поле tenderPeriod.endDate
-  ${value}=  Execute Javascript  return $('tender-step-period-diagram .tender-step-period-diagram__item p:contains(Подання пропозицій)+p span:eq(1)').text()
+  ${value}=  Execute Javascript  return $('tender-periods-diagram .tender-periods-diagram__item p:contains(Подання пропозицій)+p span:eq(1)').text()
   ${value}=  izi convert izi date to prozorro date  ${value}
   [Return]  ${value}
 
 izi знайти на сторінці тендера поле enquiryPeriod.startDate
   ${stepName}=  Run Keyword If  '${MODE}' == 'belowThreshold'  Set Variable  Період уточнень
   ...  ELSE  Set Variable  Подання пропозицій
-  ${value}=  Execute Javascript  return $('tender-step-period-diagram .tender-step-period-diagram__item p:contains(${stepName})+p span:eq(0)').text()
+  ${value}=  Execute Javascript  return $('tender-periods-diagram .tender-periods-diagram__item p:contains(${stepName})+p span:eq(0)').text()
   ${value}=  izi convert izi date to prozorro date  ${value}
   [Return]  ${value}
 
 izi знайти на сторінці тендера поле enquiryPeriod.endDate
   ${stepName}=  Run Keyword If  '${MODE}' == 'belowThreshold'  Set Variable  Період уточнень
   ...  ELSE  Set Variable  Подання пропозицій
-  ${value}=  Execute Javascript  return $('tender-step-period-diagram .tender-step-period-diagram__item p:contains(${stepName})+p span:eq(1)').text()
+  ${value}=  Execute Javascript  return $('tender-periods-diagram .tender-periods-diagram__item p:contains(${stepName})+p span:eq(1)').text()
   ${value}=  izi convert izi date to prozorro date  ${value}
   [Return]  ${value}
 
@@ -294,7 +294,7 @@ izi знайти на сторінці тендера поле minimalStep.amoun
   [Return]  ${value}
 
 izi get lot minimalStep string
-  ${minimalStepString}=  Execute Javascript  return $('lot-content .tender-section tender-lot-info notes li:has(strong:contains(Мінімальний крок аукциону:)) span').text().trim()
+  ${minimalStepString}=  Execute Javascript  return $('.tender-section tender-lot-info notes li:has(strong:contains(Мінімальний крок аукциону:)) span').text().trim()
   [Return]  ${minimalStepString}
 
 izi знайти на сторінці лотів мінімальний minimalStep.amount
@@ -324,7 +324,7 @@ izi знайти на сторінці лоту ${index} поле minimalStep.cu
 
 izi знайти на сторінці лоту ${index} поле minimalStep.valueAddedTaxIncluded
   izi обрати лот ${index}
-  ${isTaxIncluded}=  Execute Javascript  return !!$('lot-content .tender-section tender-lot-info notes li:has(strong:contains(Мінімальний крок аукциону:)) span:contains(з ПДВ)').length > 0
+  ${isTaxIncluded}=  Execute Javascript  return !!$('.tender-section tender-lot-info notes li:has(strong:contains(Мінімальний крок аукциону:)) span:contains(з ПДВ)').length > 0
   [Return]  ${isTaxIncluded}
 
 izi знайти на сторінці тендера поле awards[${awardIndex}].complaintPeriod.endDate
@@ -366,7 +366,7 @@ izi знайти на сторінці тендера поле causeDescription
   [Return]  ${value}
 
 izi знайти на сторінці тендера поле value.currency
-  ${value}=  Execute Javascript  return $(".tender-details__price").first().contents().eq(2).text()
+  ${value}=  Execute Javascript  return $(".tender-details__price").first().contents().eq(1).text()
   ${value}=  convert_izi_string_to_prozorro_string  ${value.split(' ')[0]}
   [Return]  ${value}
 
@@ -554,16 +554,16 @@ izi знайти на сторінці лоту поле lots[${index}].${field}
 
 izi знайти на сторінці лоту ${index} поле title
   izi обрати лот ${index}
-  ${value}=  Get Text  css=lot-content .tender-lot-description .tender-section__topic:first-child
+  ${value}=  Get Text  css=tender-lot .tender-lot-description .tender-section__topic:first-child
   [Return]  ${value}
 
 izi знайти на сторінці лоту ${index} поле description
   izi обрати лот ${index}
-  ${value}=  Get Text  jquery=lot-content .tender-section tender-lot-description p:first
+  ${value}=  Get Text  jquery=tender-lot tender-lot-description p:first
   [Return]  ${value}
 
 izi get lot budget string
-  ${budgetString}=  Execute Javascript  return $('lot-content .tender-section tender-lot-info notes li:has(strong:contains(Бюджет лоту:)) span').text().trim()
+  ${budgetString}=  Execute Javascript  return $('.tender-section tender-lot-info notes li:has(strong:contains(Бюджет лоту:)) span').text().trim()
   [Return]  ${budgetString}
 
 izi знайти на сторінці лоту ${index} поле value.amount
@@ -581,8 +581,10 @@ izi знайти на сторінці лоту ${index} поле value.currency
 
 izi знайти на сторінці лоту ${index} поле value.valueAddedTaxIncluded
   izi обрати лот ${index}
-  ${isTaxIncluded}=  Execute Javascript  return !!$('lot-content .tender-section tender-lot-info notes li:has(strong:contains(Бюджет лоту:)) span:contains(з ПДВ)').length > 0
+  ${isTaxIncluded}=  Execute Javascript  return !!$('.tender-section tender-lot-info notes li:has(strong:contains(Бюджет лоту:)) span:contains(з ПДВ)').length > 0
   [Return]  ${isTaxIncluded}
+
+
 
 izi знайти на сторінці лоту ${index} поле description предмету ${item_id}
   izi обрати лот ${index}
@@ -788,8 +790,8 @@ izi question-form check tender
 izi question-form submit form
   Wait Until Element Is Visible  jquery=questions .question-create__btn-wrap button:not(button[disabled])
   Click Button  jquery=questions .question-create__btn-wrap button
-  Wait Until Element Is Visible  jquery=questions .action-dialog-popup__btn-wrap button
-  Click Button  jquery=questions .action-dialog-popup__btn-wrap button
+  Wait Until Element Is Visible  jquery=questions .question-create .action-dialog-popup__btn-wrap button
+  Click Button  jquery=questions .question-create .action-dialog-popup__btn-wrap button
 
 izi знайти на сторінці тендеру запитання ${question_id} поле title
   Click Element  jquery=tender-tabs izi-tabs-2 .izi-tabs a:nth-child(3)
@@ -825,7 +827,7 @@ izi знайти index лоту за lotObjectId
 
 izi знайти на сторінці тендера поле title документу ${doc_id}
   ${value}=  izi find objectId element value  objectId=${doc_id}
-  ...  wrapperElSelector=tender-documents .documents-versions__row
+  ...  wrapperElSelector=.documents-versions__row
   ...  elThatHasObjectIdSelector=.documents-versions__name a:first
   ...  elThatHasValueSelector=.documents-versions__name a:first
   [Return]  ${value}
@@ -841,7 +843,7 @@ izi знайти на сторінці лоту ${index} поле title доку
 izi знайти на сторінці тендера поле ulr документу ${doc_id}
   ${attribute}=  Set Variable  href
   ${value}=  Run Keyword  izi find objectId element attribute  attribute=${attribute}  objectId=${doc_id}
-  ...  wrapperElSelector=tender-documents .documents-versions__row
+  ...  wrapperElSelector=tender-lot .documents-versions__row
   ...  elThatHasObjectIdSelector=.documents-versions__name a:first
   ...  elThatHasValueSelector=.documents-versions__name a:first
   [Return]  ${value}
@@ -914,8 +916,8 @@ izi claim-submit-form submit form
   Sleep  2
   Click Button  jquery=claims .pretense-create__btn-wrap button
   Sleep  2
-  Wait Until Element Is Visible  jquery=claims tender-pretense-create .action-dialog-popup__btn-wrap__btn-ok  20 seconds
-  Click Button  jquery=claims tender-pretense-create .action-dialog-popup__btn-wrap__btn-ok
+  Wait Until Element Is Visible  jquery=claims tender-pretense-create .action-dialog-popup[style=""] .action-dialog-popup__btn-wrap__btn-ok  20 seconds
+  Click Button  jquery=claims tender-pretense-create .action-dialog-popup[style=""] .action-dialog-popup__btn-wrap__btn-ok
   Sleep  2
 
 izi award-claim-submit-form submit form
@@ -923,9 +925,9 @@ izi award-claim-submit-form submit form
   Sleep  2
   Click Element  jquery=claims award-pretense-create .pretense-create__btn-wrap button
   Sleep  2
-  Wait Until Element Is Visible  jquery=claims award-pretense-create .action-dialog-popup__btn-wrap__btn-ok  20 seconds
+  Wait Until Element Is Visible  jquery=claims award-pretense-create .action-dialog-popup[style=""] .action-dialog-popup__btn-wrap__btn-ok  20 seconds
   Sleep  2
-  Click Button  jquery=claims award-pretense-create .action-dialog-popup__btn-wrap__btn-ok
+  Click Button  jquery=claims award-pretense-create .action-dialog-popup[style=""] .action-dialog-popup__btn-wrap__btn-ok
 
 izi claim-submit-form select lot radiobutton
   Click Element  jquery=claims .pretense-create__checker div:first .checkbox:last label
@@ -938,9 +940,9 @@ izi claim-submit-form save draft
   Sleep  2
   Click Element  jquery=claims .pretense-create__save
   Sleep  2
-  Wait Until Element Is Visible  jquery=claims tender-pretense-create .action-dialog-popup__btn-wrap__btn-ok  20 seconds
+  Wait Until Element Is Visible  jquery=claims tender-pretense-create .action-dialog-popup[style=""] .action-dialog-popup__btn-wrap__btn-ok  20 seconds
   Sleep  2
-  Click Button  jquery=claims tender-pretense-create .action-dialog-popup__btn-wrap__btn-ok
+  Click Button  jquery=claims tender-pretense-create .action-dialog-popup[style=""] .action-dialog-popup__btn-wrap__btn-ok
   Wait Until Page Contains Element  jquery=claims tender-pretense-create[draftpretenseid]
   Sleep  2
 
@@ -949,9 +951,9 @@ izi award-claim-submit-form save draft
   Sleep  2
   Click Element  jquery=claims .pretense-create__save
   Sleep  2
-  Wait Until Element Is Visible  jquery=claims award-pretense-create .action-dialog-popup__btn-wrap__btn-ok  20 seconds
+  Wait Until Element Is Visible  jquery=claims award-pretense-create .action-dialog-popup[style=""] .action-dialog-popup__btn-wrap__btn-ok  20 seconds
   Sleep  2
-  Click Button  jquery=claims award-pretense-create .action-dialog-popup__btn-wrap__btn-ok
+  Click Button  jquery=claims award-pretense-create .action-dialog-popup[style=""] .action-dialog-popup__btn-wrap__btn-ok
   Wait Until Page Contains Element  jquery=claims award-pretense-create[draftpretenseid]
   Sleep  2
 
@@ -1074,8 +1076,8 @@ izi cкасувати чернетку вимоги
   Run Keyword  Execute Javascript  $('claims .pretense-create__draftRevokeReason').val("${cancellation_data.data.cancellationReason}")
   Sleep  2
   Click Element  jquery=claims .feed-block .feed-block__close:first
-  Wait Until Element Is Visible  jquery=.action-dialog-popup__action-block:first .btn_12
-  Click Button  jquery=.action-dialog-popup__action-block:first .btn_12
+  Wait Until Element Is Visible  jquery=.action-dialog-popup[style=""] .action-dialog-popup__action-block:first .btn_12
+  Click Button  jquery=.action-dialog-popup[style=""] .action-dialog-popup__action-block:first .btn_12
 
 izi отримати поле status з вимоги
   [Arguments]  ${complaintID}
@@ -1181,7 +1183,8 @@ izi bid-submit-form open form
 izi bid-submit-form close submit-form by clicking X
   ${isOpened}=  Execute Javascript  return !!$('.bid-submit fullscreen-popup.fullscreen-popup__opened').length
   Return From Keyword If  '${isOpened}' == 'False'
-  Click Element  jquery=.bid-submit fullscreen-popup .fullscreen-popup__close
+  Click Element  jquery=.bid-submit fullscreen-popup .popup__close:first
+  Run Keyword And Ignore Error    Click Button      jquery=.bid-submit-1 .fullscreen-popup__opened .fullscreen-popup__content > .action-dialog-popup .btn_12
   Wait Until Element Is Not Visible  jquery=.bid-submit fullscreen-popup
 
 izi bid-submit-form fill valueAmount
@@ -1323,7 +1326,7 @@ izi bid-submit-form submit form
   ${canSubmit}=  Execute Javascript  return !!$('.bid-submit .bid-submit__control button:not(button[disabled])').length
   Run Keyword And Return If  '${canSubmit}' == 'False'  Fail
   Click Element  jquery=.bid-submit .bid-submit__control button
-  ${dialogSelector}=  Set Variable  .bid-submit action-dialog-popup:not(bid-signature action-dialog-popup)
+  ${dialogSelector}=  Set Variable  .bid-submit-1 .fullscreen-popup__content > action-dialog-popup:not(bid-signature action-dialog-popup)
   ${messageDialogSelector}=  Set Variable  ${dialogSelector} .action-dialog-popup__message
   Wait Until Element Is Visible  jquery=${messageDialogSelector}  20
   Click Element  jquery=${messageDialogSelector}+.action-dialog-popup__btn-wrap button
@@ -1475,7 +1478,7 @@ izi bidding-results-form open award attachments popup
   Sleep  500ms
 
 izi bidding-results-form close award attachments popup
-  Click Element  jquery=bidding-results attachments-popup .fullscreen-popup__opened .fullscreen-popup__close
+  Click Element  jquery=bidding-results attachments-popup .fullscreen-popup__opened .popup__close
   Sleep  500ms
 
 
