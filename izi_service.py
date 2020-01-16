@@ -13,10 +13,18 @@ def convert_izi_string_to_prozorro_string(string):
         u"Вимогу задоволено":u"answered",
         u"true": True,
         u"false": False,
+        u"Укладена рамкова угода":u"active",
+        u"Підтверджена зміна": u"active",
+        u"Скасована зміна": u"cancelled",
+        u"Зміна ціни за одиницю товару (послуги) у зв'язку із зміною ставок податків і зборів пропорційно до змін таких ставок.;": u"taxRate",
+        u"Зміна ціни за одиницю товару (послуги) не більше ніж на 10 відсотків у разі коливання ціни такого товару (послуги) на ринку.;": u"itemPriceVariation",
+        u"Зміна встановленого згідно із законодавством органами державної статистики індексу споживчих цін, зміна курсу іноземної валюти, зміна біржових котирувань або показників Platts, регульованих цін (тарифів) і нормативів, які застосовуються в рамковій угоді, у разі встановлення порядку зміна ціни за одиницю товару (послуги) у рамковій угоді.;": u"thirdParty",
+        u"Припинення участі у рамковій угоді учасника.;": u"partyWithdrawal"
+
     }.get(string, string)
 
 def get(url):
-    response = requests.get(url, timeout=2)
+    response = requests.get(url, timeout=10)
     return munch.munchify({
         "data": response.json(),
         "status_code": response.status_code
@@ -27,6 +35,12 @@ def get_time_with_offset(date):
     time_zone = timezone('Europe/Kiev')
     localized_date = time_zone.localize(date_obj)
     return localized_date.strftime('%Y-%m-%d %H:%M:%S.%f%z')
+
+def convert_dtstring_to_isoformat(date):
+    date_obj = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M")
+    time_zone = timezone('Europe/Kiev')
+    localized_date = time_zone.localize(date_obj)
+    return localized_date.isoformat()
 
 def get_izi_docType_by_prozorro_docType(przDocType):
     return {
@@ -97,5 +111,16 @@ def get_prozorro_pmtype_by_izi_pmtext(pmtext):
         u"Конкурентний діалог з публікацією на англійській мові": u"competitiveDialogueEU",
         u"Конкурентний діалог з публікацією на англійській мові, етап #2": u"competitiveDialogueEU.stage2",
         u"Звіт про укладений договір": u"reporting",
-        u"Еско процедура": u"esco"
+        u"Еско процедура": u"esco",
+        u"Укладання рамкової угоди": u"closeFrameworkAgreementUA",
+        u"Відбір для закупівлі за рамковою угодою": u"closeFrameworkAgreementSelectionUA"
     }.get(pmtext)
+
+
+def get_prozorro_procurementCategory_by_izi_procurementCategoryText(text):
+    return {
+        u"Товари": u"goods",
+        u"Послуги": u"services",
+        u"Роботи": u"works",
+
+    }.get(text)
