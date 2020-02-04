@@ -126,7 +126,7 @@ Login
 
 Отримати інформацію із документа
   [Arguments]  ${username}  ${tender_uaid}  ${doc_id}  ${field}
-  izi update tender  ${tender_uaid}
+  izi sync tenders
   izi перейти на сторінку тендеру  ${tender_uaid}
   ${value}=  Run Keyword  izi знайти на сторінці тендера поле ${field} документу ${doc_id}
   Return From Keyword If  "${value}" != "None"  ${value}
@@ -138,7 +138,7 @@ Login
 
 Отримати інформацію із документа до скарги
   [Arguments]  ${username}  ${tender_uaid}  ${complaintID}  ${doc_id}  ${field}
-  izi update tender  ${tender_uaid}
+  izi sync tenders
   izi перейти на сторінку тендеру  ${tender_uaid}
   ${value}=  Run Keyword  izi знайти поле ${field} документу ${doc_id} вимоги ${complaintID}
   [Return]  ${value}
@@ -155,28 +155,28 @@ Login
   [Arguments]  ${username}  ${tender_uaid}  ${claim}  ${document}
   izi перейти на сторінку тендеру  ${tender_uaid}
   ${complaintID}=  izi створити вимогу про виправлення умов тендера  ${tender_uaid}  ${claim}  ${document}
-  izi update tender  ${tender_uaid}
+  izi sync tenders
   [Return]  ${complaintID}
 
 Створити вимогу про виправлення умов лоту
   [Arguments]  ${username}  ${tender_uaid}  ${claim}  ${lot_id}  ${document_path}
   izi перейти на сторінку тендеру  ${tender_uaid}
   ${complaintID}=  izi cтворити вимогу про виправлення умов лоту  ${tender_uaid}  ${lot_id}  ${claim}  ${document_path}
-  izi update tender  ${tender_uaid}
+  izi sync tenders
   [Return]  ${complaintID}
 
 Створити чернетку вимоги про виправлення умов закупівлі
   [Arguments]  ${username}  ${tender_uaid}  ${claim}
   izi перейти на сторінку тендеру  ${tender_uaid}
   ${complaintID}=  izi створити чернетку вимоги про виправлелння умов закупівлі  ${tender_uaid}  ${claim}
-  izi update tender  ${tender_uaid}
+  izi sync tenders
   [Return]  ${complaintID}
 
 Створити чернетку вимоги про виправлення умов лоту
   [Arguments]  ${username}  ${tender_uaid}  ${claim}  ${lot_id}
   izi перейти на сторінку тендеру  ${tender_uaid}
   ${complaintID}=  izi створити чернетку вимоги про виправлення умов лоту  ${tender_uaid}  ${claim}  ${lot_id}
-  izi update tender  ${tender_uaid}
+  izi sync tenders
   [Return]  ${complaintID}
 
 Відповісти на вимогу про виправлення умов закупівлі
@@ -200,7 +200,7 @@ Login
 
 Підтвердити вирішення вимоги про виправлення умов закупівлі
   [Arguments]  ${username}  ${tender_uaid}  ${complaintID}  ${confirmation_data}
-  izi update tender  ${tender_uaid}
+  izi sync tenders
   izi перейти на сторінку тендеру  ${tender_uaid}
   izi підтвердити\заперечити вирішення вимоги про виправлення умов закупівлі  ${complaintID}  ${confirmation_data}  ${tender_uaid}
 
@@ -304,7 +304,7 @@ Login
   [Arguments]  ${username}  ${tender_uaid}  ${claim}  ${award_index}
   izi перейти на сторінку тендеру  ${tender_uaid}
   ${complaintID}=  izi створити чернетку вимоги про виправлення визначення переможця  ${tender_uaid}  ${claim}  ${award_index}
-  izi update tender  ${tender_uaid}
+  izi sync tenders
   [Return]  ${complaintID}
 
 Скасувати вимогу про виправлення визначення переможця

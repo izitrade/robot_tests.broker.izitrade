@@ -83,68 +83,30 @@ izi checkbox check change
   Click Element  jquery=${checkboxSelector} label
   Sleep  50ms
 
-izi update tender
-  [Arguments]  ${tenderUaId}
-  ${tenderId}=  izi get tenderId by tenderUaId  ${tenderUaId}
-  ${url}=  Set Variable  ${BROKERS.izi.backendUrl}/tenders/sync/${tenderId}
-  ${response}=  izi_service.get  ${url}
+izi sync tenders
+  ${url}=  Set Variable  ${BROKERS.izi.backendUrl}/tenders/sync
+  ${response}=  izi_service.post  ${url}
   ${statusCode}=	Get Variable Value  ${response.status_code}
-  Run Keyword If  ${statusCode} != 200  Fail  неможливо виконати запит на ручну синхронізацію тендеру, статус ${statusCode}
-  Log  tender ${tenderUaId} updated ${url}  WARN
+  Run Keyword If  ${statusCode} != 204  Fail  неможливо виконати запит на ручну синхронізацію тендерів, статус ${statusCode} ${url}
+  Log  tenders synced ${url}  WARN
 
-izi sync agreement
-  [Arguments]  ${agreementUaId}
-  ${agreementId}=  izi get agreementId by agreementUaId  ${agreementUaId}
-  ${url}=  Set Variable  ${BROKERS.izi.backendUrl}/agreements/sync/${agreementId}
-  ${response}=  izi_service.get  ${url}
+izi sync agreements
+  ${url}=  Set Variable  ${BROKERS.izi.backendUrl}/agreements/sync
+  ${response}=  izi_service.post  ${url}
   ${statusCode}=	Get Variable Value  ${response.status_code}
-  Run Keyword If  ${statusCode} != 200  Fail  неможливо виконати запит на ручну синхронізацію угоди, статус ${statusCode}
-  Log  agreement ${agreementUaId} updated ${url}  WARN
+  Run Keyword If  ${statusCode} != 204  Fail  неможливо виконати запит на ручну синхронізацію угод, статус ${statusCode} ${url}
+  Log  agreement synced ${url}  WARN
 
-izi sync plan
-  [Arguments]  ${planUaId}
-  ${planId}=  izi get planId by planUaId  ${planUaId}
-  ${url}=  Set Variable  ${BROKERS.izi.backendUrl}/plans/sync/${planId}
-  ${response}=  izi_service.get  ${url}
+izi sync plans
+  ${url}=  Set Variable  ${BROKERS.izi.backendUrl}/plans/sync
+  ${response}=  izi_service.post  ${url}
   ${statusCode}=	Get Variable Value  ${response.status_code}
-  Run Keyword If  ${statusCode} != 200  Fail  неможливо виконати запит на ручну синхронізацію плану, статус ${statusCode}
-  Log  plan ${planUaId} updated ${url}  WARN
+  Run Keyword If  ${statusCode} != 204  Fail  неможливо виконати запит на ручну синхронізацію планів, статус ${statusCode} ${url}
+  Log  plans synced ${url}  WARN
 
 izi get page lots count
 	${lotsCount}=	Execute Javascript	return $('lot-tabs .lot-tabs__tab').length
   [Return]  ${lotsCount}
-
-izi get tenderId by tenderUaId
-  [Arguments]  ${tenderUaId}
-  ${tenderOwner}=  Run Keyword If  '${ROLE}' != 'tender_owner'  Set Variable  ${BROKERS.Quinta.roles.tender_owner}
-  ...  ELSE  Set Variable  ${BROKERS['${BROKER}'].roles.tender_owner}
-  ${status}   ${tenderId}=  Run Keyword And Ignore Error   openprocurement_client.Отримати internal id по UAid  ${tenderOwner}  ${tenderUaId}
-  Run Keyword If  '${status}' == 'PASS'  Return From Keyword  ${tenderId}
-  ${file_path}=  Get Variable Value  ${ARTIFACT_FILE}  artifact.yaml
-  ${ARTIFACT}=  load_data_from  ${file_path}
-  Log   guess tenderId from artifact file => ${ARTIFACT.tender_id}  WARN
-  [Return]  ${ARTIFACT.tender_id}
-
-izi get planId by planUaId
-  [Arguments]  ${planUaId}
-  ${tenderOwner}=  Run Keyword If  '${ROLE}' != 'tender_owner'  Set Variable  ${BROKERS.Quinta.roles.tender_owner}
-  ...  ELSE  Set Variable  ${BROKERS['${BROKER}'].roles.tender_owner}
-  ${status}   ${planId}=  Run Keyword And Ignore Error   openprocurement_client.Отримати internal id плану по UAid  ${tenderOwner}  ${planUaId}
-  Run Keyword If  '${status}' == 'PASS'  Return From Keyword  ${planId}
-  ${file_path}=  Get Variable Value  ${ARTIFACT_FILE}  artifact_plan.yaml
-  ${ARTIFACT}=  load_data_from  ${file_path}
-  Log   guess planId from artifact file => ${ARTIFACT.tender_id}  WARN
-  [Return]  ${ARTIFACT.tender_id}
-
-izi get agreementId by agreementUaId
-  [Arguments]  ${agreementUaId}
-  ${tenderOwner}=  Run Keyword If  '${ROLE}' != 'tender_owner'  Set Variable  ${BROKERS.Quinta.roles.tender_owner}
-  ...  ELSE  Set Variable  ${BROKERS['${BROKER}'].roles.tender_owner}
-  ${status}   ${agreementId}=  Run Keyword And Ignore Error   openprocurement_client.Отримати internal id угоди по UAid  ${tenderOwner}  ${agreementUaId}
-  Run Keyword If  '${status}' == 'PASS'  Return From Keyword  ${agreementId}
-  ${file_path}=  Get Variable Value  ${ARTIFACT_FILE}  artifact.yaml
-  ${ARTIFACT}=  load_data_from  ${file_path}
-  Log   guess agreementId from artifact file => ${ARTIFACT.agreement_id}  WARN
 
 izi get tenderJson by tenderUaId
   [Arguments]  ${tenderUaId}
@@ -187,7 +149,7 @@ izi чи я на сторінці тендеру ${tender_uaid}
 
 izi перейти на сторінку тендеру
   [Arguments]  ${tender_uaid}
-  izi update tender  ${tender_uaid}
+  izi sync tenders
   ${isAmOnPage}=  izi чи я на сторінці тендеру ${tender_uaid}
   Run Keyword If  '${isAmOnPage}' == 'FALSE'  izi знайти тендер та перейти на сторінку  ${tender_uaid}
   Sleep  2s
@@ -1143,7 +1105,7 @@ izi підтвердити\заперечити вирішення вимоги 
   ${confirmation}=  Set Variable  ${confirmation_data.data.satisfied}
   Run Keyword If  '${confirmation}' == 'True'  Click Element  jquery=claims pretense-row .pretense-row__content-block:has(span:contains(${complaintID})) claim-satisfaction .btn_9
   ...  ELSE  Click Element  jquery=claims pretense-row .pretense-row__content-block:has(span:contains(${complaintID})) claim-satisfaction .btn_10
-  izi update tender  ${tender_uaid}
+  izi sync tenders
 
 izi cкасувати вимогу до лоту або закупівлі
   [Arguments]  ${tender_uaid}  ${complaintID}  ${cancellation_data}  ${award_index}=${None}
@@ -1940,7 +1902,7 @@ izi чи я на сторінці угоди ${agreement_uaid}
 
 izi перейти на сторінку угоди
   [Arguments]  ${agreement_uaid}
-  izi sync agreement  ${agreement_uaid}
+  izi sync agreements
   ${isAmOnPage}=  izi чи я на сторінці угоди ${agreement_uaid}
   Run Keyword If   '${isAmOnPage}' == 'FALSE'   Run Keywords
   ...   Go to  ${BROKERS['izi'].homepage}/agreements/${agreement_uaid}
@@ -2018,7 +1980,7 @@ izi знайти на сторінці тендера поле lots[${lotIndex}]
 
 izi перейти на сторінку плану
   [Arguments]  ${planUaId}
-  izi sync plan  ${planUaId}
+  izi sync plans
   ${isAmOnPage}=  izi чи я на сторінці плану ${planUaId}
   Run Keyword If  '${isAmOnPage}' == 'FALSE'  izi знайти план та перейти на сторінку  ${planUaId}
   Sleep  2s

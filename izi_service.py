@@ -30,6 +30,10 @@ def get(url):
         "status_code": response.status_code
     })
 
+def post(url, data = None):
+    response = requests.post(url, data, timeout=10)
+    return response
+
 def get_time_with_offset(date):
     date_obj = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M")
     time_zone = timezone('Europe/Kiev')
