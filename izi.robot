@@ -45,7 +45,7 @@ Login
 Отримати інформацію із тендера
   [Arguments]  ${username}  ${tender_uaid}  ${field}
   ${itIsPlanMZF}=  Execute Javascript  return /UA-P/.test('${tender_uaid}')
-  Run Keyword And Return If   '${itIsPlanMZF}' == 'True'  izi.Отримати інформацію із плану   ${username}  ${tender_uaid}  ${field}
+  Run Keyword And Return If  '${itIsPlanMZF}' == 'True'  izi.Отримати інформацію із плану  ${username}  ${tender_uaid}  ${field}
   izi перейти на сторінку тендеру  ${tender_uaid}
   Run Keyword And Return  izi знайти на сторінці тендера поле ${field}
 
@@ -126,7 +126,7 @@ Login
 
 Отримати інформацію із документа
   [Arguments]  ${username}  ${tender_uaid}  ${doc_id}  ${field}
-  izi sync tenders
+  izi sync tender  ${tender_uaid}
   izi перейти на сторінку тендеру  ${tender_uaid}
   ${value}=  Run Keyword  izi знайти на сторінці тендера поле ${field} документу ${doc_id}
   Return From Keyword If  "${value}" != "None"  ${value}
@@ -138,7 +138,7 @@ Login
 
 Отримати інформацію із документа до скарги
   [Arguments]  ${username}  ${tender_uaid}  ${complaintID}  ${doc_id}  ${field}
-  izi sync tenders
+  izi sync tender  ${tender_uaid}
   izi перейти на сторінку тендеру  ${tender_uaid}
   ${value}=  Run Keyword  izi знайти поле ${field} документу ${doc_id} вимоги ${complaintID}
   [Return]  ${value}
@@ -155,28 +155,28 @@ Login
   [Arguments]  ${username}  ${tender_uaid}  ${claim}  ${document}
   izi перейти на сторінку тендеру  ${tender_uaid}
   ${complaintID}=  izi створити вимогу про виправлення умов тендера  ${tender_uaid}  ${claim}  ${document}
-  izi sync tenders
+  izi sync tender  ${tender_uaid}
   [Return]  ${complaintID}
 
 Створити вимогу про виправлення умов лоту
   [Arguments]  ${username}  ${tender_uaid}  ${claim}  ${lot_id}  ${document_path}
   izi перейти на сторінку тендеру  ${tender_uaid}
   ${complaintID}=  izi cтворити вимогу про виправлення умов лоту  ${tender_uaid}  ${lot_id}  ${claim}  ${document_path}
-  izi sync tenders
+  izi sync tender  ${tender_uaid}
   [Return]  ${complaintID}
 
 Створити чернетку вимоги про виправлення умов закупівлі
   [Arguments]  ${username}  ${tender_uaid}  ${claim}
   izi перейти на сторінку тендеру  ${tender_uaid}
   ${complaintID}=  izi створити чернетку вимоги про виправлелння умов закупівлі  ${tender_uaid}  ${claim}
-  izi sync tenders
+  izi sync tender  ${tender_uaid}
   [Return]  ${complaintID}
 
 Створити чернетку вимоги про виправлення умов лоту
   [Arguments]  ${username}  ${tender_uaid}  ${claim}  ${lot_id}
   izi перейти на сторінку тендеру  ${tender_uaid}
   ${complaintID}=  izi створити чернетку вимоги про виправлення умов лоту  ${tender_uaid}  ${claim}  ${lot_id}
-  izi sync tenders
+  izi sync tender  ${tender_uaid}
   [Return]  ${complaintID}
 
 Відповісти на вимогу про виправлення умов закупівлі
@@ -200,7 +200,7 @@ Login
 
 Підтвердити вирішення вимоги про виправлення умов закупівлі
   [Arguments]  ${username}  ${tender_uaid}  ${complaintID}  ${confirmation_data}
-  izi sync tenders
+  izi sync tender  ${tender_uaid}
   izi перейти на сторінку тендеру  ${tender_uaid}
   izi підтвердити\заперечити вирішення вимоги про виправлення умов закупівлі  ${complaintID}  ${confirmation_data}  ${tender_uaid}
 
@@ -261,7 +261,7 @@ Login
   Run Keyword And Return  izi змінити на сторінці тендера поле пропозиції ${fieldname} на ${fieldvalue}
 
 Завантажити документ в ставку
-  [Arguments]  ${username}  ${filePath}  ${tender_uaid}  ${prozorro_documentType}=technicalSpecifications   ${unknownArg}=${None}
+  [Arguments]  ${username}  ${filePath}  ${tender_uaid}  ${prozorro_documentType}=technicalSpecifications  ${unknownArg}=${None}
   izi перейти на сторінку тендеру  ${tender_uaid}
   ${docType}=  izi_service.get_izi_docType_by_prozorro_docType  ${prozorro_documentType}
   ${lotsCount}=  izi get page lots count
@@ -304,7 +304,7 @@ Login
   [Arguments]  ${username}  ${tender_uaid}  ${claim}  ${award_index}
   izi перейти на сторінку тендеру  ${tender_uaid}
   ${complaintID}=  izi створити чернетку вимоги про виправлення визначення переможця  ${tender_uaid}  ${claim}  ${award_index}
-  izi sync tenders
+  izi sync tender  ${tender_uaid}
   [Return]  ${complaintID}
 
 Скасувати вимогу про виправлення визначення переможця
@@ -337,7 +337,7 @@ Login
 
 Отримати інформацію із угоди
   [Arguments]  ${username}  ${agreement_uaid}  ${field}
-  izi перейти на сторінку угоди   ${agreement_uaid}
+  izi перейти на сторінку угоди  ${agreement_uaid}
   Run Keyword And Return  izi знайти на сторінці угоди поле ${field}
 
 Оновити сторінку з планом
